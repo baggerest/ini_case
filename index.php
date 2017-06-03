@@ -1,19 +1,16 @@
 <script language="javascript">
     function show(item,count)
     {
-        for (i = 1; i <= count; i++) {
-            document.getElementById('menu' + i).style.display = 'none';
-        }
+        document.getElementById(item).style.display = document.getElementById(item).style.display=="none"?"":"none";
 
-        if(document.getElementById(item).style.display == 'none')
+        for (i = 1; i <= count; i++)
         {
-            document.getElementById(item).style.display = 'inline';
-            return;
-        }
-        if(document.getElementById(item).style.display == 'inline')
-        {
-            document.getElementById(item).style.display = 'none';
-            return;
+            if('menu'+i==item)
+            {
+                return
+            }else{
+                document.getElementById('menu' + i).style.display = 'none';
+            }
         }
     }
 </script>
@@ -59,7 +56,7 @@ foreach ($get_ as $name => $item)
 {
     $i++;
     echo "<tr><th colspan='3' style='background-color: darkkhaki' onclick='show(\"menu{$i}\",$count)'>".$name."</th></tr>";
-    echo "<tbody id='menu{$i}' style='display: inline'>";
+    echo "<tbody id='menu{$i}' style='display: none'>";
     foreach ($item as $number => $value)
     {
         $split = explode(": ",$value);
