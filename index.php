@@ -1,24 +1,3 @@
-<script language="JavaScript">
-    <!--
-    var currentMenu = 1;
-    function ShowSubMenu(id) {
-        if (document.all("SubMenu"+id).style.display == "")
-        {
-            document.getElementById("SubMenu"+id).style.display = "none";
-            currentMenu = 0;
-        }
-        else
-        {
-            if (currentMenu != 0)
-            {
-                document.getElementById("SubMenu"+id).style.display = "none";
-            }
-            document.getElementById("SubMenu"+id).style.display = "";
-            currentMenu = id;
-        }
-    }
-    -->
-</script>
 <script language="javascript">
     function show(item)
     {
