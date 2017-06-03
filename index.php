@@ -1,14 +1,19 @@
 <script language="javascript">
-    function show(item)
+    function show(item,count)
     {
-        switch (document.getElementById(item).style.display)
+        for (i = 1; i <= count; i++) {
+            document.getElementById('menu' + i).style.display = 'none';
+        }
+
+        if(document.getElementById(item).style.display == 'none')
         {
-            case 'block':
-                document.getElementById(item).style.display = 'none';
-                break;
-            case 'none':
-                document.getElementById(item).style.display = 'block';
-                break;
+            document.getElementById(item).style.display = 'inline';
+            return;
+        }
+        if(document.getElementById(item).style.display == 'inline')
+        {
+            document.getElementById(item).style.display = 'none';
+            return;
         }
     }
 </script>
@@ -44,6 +49,7 @@ $read_conf_list = array(
     "battle/skill.conf",
     "battle/status.conf",
 );
+$count = count($read_conf_list);
 $get_ = get_conf_set_list($main_folder,$read_conf_list);
 $split = array();
 echo "<div style='margin-left: auto;margin-right: auto'>";
@@ -52,8 +58,8 @@ $i = 0;
 foreach ($get_ as $name => $item)
 {
     $i++;
-    echo "<tr><th colspan='3' style='background-color: darkkhaki' onclick='show(\"menu{$i}\")'>".$name."</th></tr>";
-    echo "<tbody id='menu{$i}' style='display:none'>";
+    echo "<tr><th colspan='3' style='background-color: darkkhaki' onclick='show(\"menu{$i}\",$count)'>".$name."</th></tr>";
+    echo "<tbody id='menu{$i}' style='display: inline'>";
     foreach ($item as $number => $value)
     {
         $split = explode(": ",$value);
