@@ -2,7 +2,7 @@
     <!--
     var currentMenu = 1;
     function ShowSubMenu(id) {
-        if (document.getElementById("SubMenu"+id).style.display == "")
+        if (document.all("SubMenu"+id).style.display == "")
         {
             document.getElementById("SubMenu"+id).style.display = "none";
             currentMenu = 0;
@@ -19,10 +19,24 @@
     }
     -->
 </script>
+<script language="javascript">
+    function show(item)
+    {
+        switch (document.getElementById(item).style.display)
+        {
+            case 'block':
+                document.getElementById(item).style.display = 'none';
+                break;
+            case 'none':
+                document.getElementById(item).style.display = 'block';
+                break;
+        }
+    }
+</script>
 
 <?php
 header("Content-Type:text/html; charset=utf-8");
-$main_folder = "C:/my/rathena/conf/";
+$main_folder = "C:/wamp64/www/rathena/conf/";
 
 $read_conf_list = array(
     "battle_athena.conf",
@@ -59,20 +73,22 @@ $i = 0;
 foreach ($get_ as $name => $item)
 {
     $i++;
-    echo "<tr><th colspan='3' style='background-color: darkkhaki' onclick='ShowSubMenu($i)'>".$name."</th></tr>";
+    echo "<tr><th colspan='3' style='background-color: darkkhaki' onclick='show(\"menu{$i}\")'>".$name."</th></tr>";
+    echo "<tbody id='menu{$i}' style='display:none'>";
     foreach ($item as $number => $value)
     {
         $split = explode(": ",$value);
-        echo "<tr id='SubMenu{$i}' style='display: none'>";
-        echo "<td id='SubMenu{$i}' style='text-align: center;display: none'>";
+        echo "<tr>";
+        echo "<td>";
         echo $number;
         echo "</td>";
-        echo "<td id='SubMenu{$i}' align='right' style='display: none'>".$split[0]."</td>";
-        echo "<td id='SubMenu{$i}' style='display: none'>";
+        echo "<td>".$split[0]."</td>";
+        echo "<td>";
         echo "<input  name='".$split[0]."' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5).">";
         echo "</td>";
         echo "</tr>";
     }
+    echo "</tbody>";
 }
 echo "</table></div>";
 
