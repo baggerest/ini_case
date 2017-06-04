@@ -20,13 +20,37 @@
         }
     }
 
-    function check(item,thitem)
+    var thaa = new Array();
+    function check(item,thname,setnumber)
     {
+        if(thaa[thname]==null)thaa[thname]=new Array();
+        if(thaa[thname][setnumber]==null)thaa[thname][setnumber] = 0;
         if(document.getElementById(item).value!=document.getElementById(item+'_').value)
         {
             document.getElementById(item).style.backgroundColor = '#ff0000';
+            thaa[thname][setnumber] = 1;
         }else{
             document.getElementById(item).style.backgroundColor = document.getElementById(item+'_').style.backgroundColor;
+            thaa[thname][setnumber] = 0;
+        }
+        var sum = thaa[thname].reduce(function(a, b) {
+            return a + b;
+        });
+        document.getElementById(thname).style.backgroundColor = sum!=0?'#ff0000':'#BDB885';
+    }
+
+    function recoveryset(thname,setnumber)
+    {
+        item = thname + '^' + setnumber;
+        document.getElementById(item).value = document.getElementById(item+'_').value;
+        check(item,thname,setnumber);
+    }
+
+    function recoveryallset(thname)
+    {
+        for(var key in thaa[thname])
+        {
+            recoveryset(thname,key);
         }
     }
 </script>
@@ -62,15 +86,6 @@ $read_conf_list = array(
     "battle/skill.conf",
     "battle/status.conf",
 );
-?>
-<script language="javascript">
-    var ia = new Array(<?php foreach ($read_conf_list as $idd){echo "\"$idd\",";} ?>);
-</script>
-<?php
-
-//import
-
-
 $count = count($read_conf_list);
 $get_ = get_conf_set_list($main_folder,$read_conf_list);
 $split = array();
@@ -87,7 +102,9 @@ $i = 0;
 foreach ($get_ as $name => $item)
 {
     $i++;
-    echo "<tr><th id='$name' colspan='3' style='cursor: pointer;background-color: #BDB885' onclick='show(\"menu{$i}\")'>".$name."</th></tr>";
+    echo "<tr><th id='$name' colspan='4' style='cursor: pointer;background-color: #BDB885' onclick='show(\"menu{$i}\")'>".$name."</th>";
+    echo "<td><input type='submit' value='recovery all' onclick='recoveryallset(\"$name\");return false;'></td>";
+    echo "</tr>";
     echo "<tbody id='menu{$i}' style='display: none'>";
     foreach ($item as $number => $value)
     {
@@ -98,9 +115,10 @@ foreach ($get_ as $name => $item)
         echo "</td>";
         echo "<td style='text-align: right'>".$split[0]."</td>";
         echo "<td>";
-        echo "<input id='".$name."^".$split[0]."_' name='".$name."^".$split[0]."_' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5)." style='color: darkgrey' readonly='readonly'><br>";
-        echo "<input id='".$name."^".$split[0]."' name='".$name."^".$split[0]."' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5)." onchange='check(this.id,\"$name\")' onkeyup='check(this.id,\"$name\")'>";
+        echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5)." style='color: darkgrey' readonly='readonly' tabindex='-1'><br>";
+        echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5)." onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
         echo "</td>";
+        echo "<td><input type='submit' value='recovery' onclick='recoveryset(\"$name\",$number);return false;'></td>";
         echo "</tr>";
     }
     echo "</tbody>";
