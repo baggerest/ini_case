@@ -57,10 +57,9 @@
 
 <?php
 header("Content-Type:text/html; charset=utf-8");
-$main_folder = "C:/my/rathena/conf/";
+$main_folder = "D:/rathena/conf/";
 
 $read_conf_list = array(
-    "battle_athena.conf",
     "char_athena.conf",
     "inter_athena.conf",
     "log_athena.conf",
@@ -86,6 +85,19 @@ $read_conf_list = array(
     "battle/skill.conf",
     "battle/status.conf",
 );
+
+$save_txt = array(
+    "import/battle_conf.txt",
+    "import/char_conf.txt",
+    "import/inter_conf.txt",
+    "import/inter_server.conf",
+    "import/log_conf.txt",
+    "import/login_conf.txt",
+    "import/map_conf.txt",
+    "import/packet_conf.txt",
+    "import/script_conf.txt",
+);
+
 $count = count($read_conf_list);
 $get_ = get_conf_set_list($main_folder,$read_conf_list);
 $split = array();
@@ -94,7 +106,6 @@ echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
 echo "File place : ".$main_folder."<br />";
 echo "<a href='javascript:openall($count)'>open all conf set list</a><br />";
 echo "<a href='javascript:closeall($count)'>close all conf set list</a><br />";
-echo "<input type='submit' value='set finish'>";
 echo "</div>";
 echo "<div>";
 echo "<table align='center' border='1' style='border-style: dashed;border-color:#FFAC55;padding:5px;'>";
@@ -119,6 +130,10 @@ foreach ($get_ as $name => $item)
         echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5)." onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
         echo "</td>";
         echo "<td><input type='submit' value='recovery' onclick='recoveryset(\"$name\",$number);return false;'></td>";
+        if($number%10==0)
+        {
+            echo "<td align='center' style='border: none'><input type='submit' value='setup' onclick='return false;'></td>";
+        }
         echo "</tr>";
     }
     echo "</tbody>";
