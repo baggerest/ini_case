@@ -53,11 +53,42 @@
             recoveryset(thname,key);
         }
     }
+
+    function getxy()
+    {
+        document.title = document.body.scrollTop +'-'+realPosY(document.getElementById('battle/status.conf^5x'));
+    }
+
+    function realPosX (oTarget) {
+        try {
+            var realX = oTarget.offsetLeft;
+            if (oTarget.offsetParent.tagName != "BODY") {
+                realX += realPosX(oTarget.offsetParent);
+            }
+            return realX;
+        }
+        catch (e) {
+            //alert("realPosX: "+e);
+        }
+    }
+
+    function realPosY (oTarget) {
+        try {
+            var realY = oTarget.offsetTop;
+            if (oTarget.offsetParent.tagName != "BODY") {
+                realY += realPosY(oTarget.offsetParent);
+            }
+            return realY;
+        }
+        catch (e) {
+            //alert("realPosY: "+e);
+        }
+    }
 </script>
 
 <?php
 header("Content-Type:text/html; charset=utf-8");
-$main_folder = "D:/rathena/conf/";
+$main_folder = "C:/my/rathena/conf/";
 
 $read_conf_list = array(
     "char_athena.conf",
@@ -129,11 +160,8 @@ foreach ($get_ as $name => $item)
         echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5)." style='color: darkgrey' readonly='readonly' tabindex='-1'><br>";
         echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$split[1]."' size= ".(strlen($split[1])+5)." onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
         echo "</td>";
-        echo "<td><input type='submit' value='recovery' onclick='recoveryset(\"$name\",$number);return false;'></td>";
-        if($number%10==0)
-        {
-            echo "<td align='center' style='border: none'><input type='submit' value='setup' onclick='return false;'></td>";
-        }
+        echo "<td align='center'><input id='".$name."^".$number."x' value='save' type='submit' onclick='return false;'></td>";
+        echo "<td align='center'><input type='submit' value='recovery' onclick='recoveryset(\"$name\",$number);return false;'></td>";
         echo "</tr>";
     }
     echo "</tbody>";
