@@ -1,4 +1,5 @@
 <script language="javascript">
+
     function show(item)
     {
         document.getElementById(item).style.display = document.getElementById(item).style.display=="none"?"":"none";
@@ -62,6 +63,7 @@
 <?php
 header("Content-Type:text/html; charset=utf-8");
 $main_folder = "D:/rathena/conf/";
+$main_folder = "C:/my/rathena/conf/";
 
 $read_conf_list = array(
     0 => "char_athena.conf",
@@ -196,7 +198,6 @@ $count = count($read_conf_list);
 $get_ = get_conf_set_list($main_folder,$read_conf_list);
 $get_txt = get_conf_set_list($main_folder,$save_txt);
 $getnew_ = margearray($get_,$get_txt,$save_txt_);
-
 echo "<form action='index.php' method='post'>";
 echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
 echo "File place : ".$main_folder."<br />";
@@ -217,10 +218,6 @@ foreach ($getnew_ as $name => $item)
     {
         $valuetemp = isset($value[2])?$value[2]:$value[1];
         $backcolor = $valuetemp!=$value[1]?'#ff0000':'';
-        if($valuetemp!=$value[1])
-        {
-            echo "<script>changecolor('$name');</script>";
-        }
         echo "<tr>";
         echo "<td style='text-align: center'>";
         echo $number;
@@ -229,6 +226,10 @@ foreach ($getnew_ as $name => $item)
         echo "<td>";
         echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$value[1]."' size= ".(strlen($value[1])+5)." style='color: darkgrey' readonly='readonly' tabindex='-1'><br>";
         echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$valuetemp."' size= ".(strlen($valuetemp)+5)." style='background-color: $backcolor' onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
+        if($valuetemp!=$value[1])
+        {
+            echo "<script>check('$name^$number','$name',$number);</script>";
+        }
         echo "</td>";
         echo "<td align='center'><input id='".$name."^".$number."x' value='save' type='submit' onclick='return false;'></td>";
         echo "<td align='center'><input type='submit' value='recovery' onclick='recoveryset(\"$name\",$number);return false;'></td>";
