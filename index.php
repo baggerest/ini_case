@@ -53,6 +53,10 @@
             recoveryset(thname,key);
         }
     }
+
+    function changecolor(item) {
+        document.getElementById(item).style.backgroundColor = '#ff0000';
+    }
 </script>
 
 <?php
@@ -211,6 +215,12 @@ foreach ($getnew_ as $name => $item)
     echo "<tbody id='menu{$i}' style='display: none'>";
     foreach ($item as $number => $value)
     {
+        $valuetemp = isset($value[2])?$value[2]:$value[1];
+        $backcolor = $valuetemp!=$value[1]?'#ff0000':'';
+        if($valuetemp!=$value[1])
+        {
+            echo "<script>changecolor('$name');</script>";
+        }
         echo "<tr>";
         echo "<td style='text-align: center'>";
         echo $number;
@@ -218,8 +228,7 @@ foreach ($getnew_ as $name => $item)
         echo "<td style='text-align: right'>".$value[0]."</td>";
         echo "<td>";
         echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$value[1]."' size= ".(strlen($value[1])+5)." style='color: darkgrey' readonly='readonly' tabindex='-1'><br>";
-        $valuetemp = isset($value[2])?$value[2]:$value[1];
-        echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$valuetemp."' size= ".(strlen($valuetemp)+5)." onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
+        echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$valuetemp."' size= ".(strlen($valuetemp)+5)." style='background-color: $backcolor' onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
         echo "</td>";
         echo "<td align='center'><input id='".$name."^".$number."x' value='save' type='submit' onclick='return false;'></td>";
         echo "<td align='center'><input type='submit' value='recovery' onclick='recoveryset(\"$name\",$number);return false;'></td>";
