@@ -167,15 +167,18 @@ function margearray($v1,$v2,$save_txt_)
         {
             foreach ($v2 as $fi => $vv)
             {
-                foreach ($vv as $ii => $vvvv)
+                foreach ($vv as $vvvv)
                 {
                     if($save_txt_[$name]==$fi&&$value[0]==$vvvv[0])
                     {
-                        if($value[0]=='import')
+                        if($vvvv[0]=='import')
                         {
-                            $v1[$name][$number+1] = $vvvv;
+                            if (!in_array($vvvv, $v1[$name]))
+                            {
+                                $v1[$name][] = $vvvv;
+                            }
                         }else{
-                            $v1[$name][$number][1] = $vvvv[1];
+                            $v1[$name][$number][2] = $vvvv[1];
                         }
                     }
                 }
@@ -189,7 +192,6 @@ $count = count($read_conf_list);
 $get_ = get_conf_set_list($main_folder,$read_conf_list);
 $get_txt = get_conf_set_list($main_folder,$save_txt);
 $getnew_ = margearray($get_,$get_txt,$save_txt_);
-//print_r($getnew_);
 
 echo "<form action='index.php' method='post'>";
 echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
@@ -216,7 +218,8 @@ foreach ($getnew_ as $name => $item)
         echo "<td style='text-align: right'>".$value[0]."</td>";
         echo "<td>";
         echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$value[1]."' size= ".(strlen($value[1])+5)." style='color: darkgrey' readonly='readonly' tabindex='-1'><br>";
-        echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$value[1]."' size= ".(strlen($value[1])+5)." onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
+        $valuetemp = isset($value[2])?$value[2]:$value[1];
+        echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$valuetemp."' size= ".(strlen($valuetemp)+5)." onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
         echo "</td>";
         echo "<td align='center'><input id='".$name."^".$number."x' value='save' type='submit' onclick='return false;'></td>";
         echo "<td align='center'><input type='submit' value='recovery' onclick='recoveryset(\"$name\",$number);return false;'></td>";
