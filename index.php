@@ -1,5 +1,4 @@
 <script language="javascript">
-
     function show(item)
     {
         document.getElementById(item).style.display = document.getElementById(item).style.display=="none"?"":"none";
@@ -58,12 +57,14 @@
     function changecolor(item) {
         document.getElementById(item).style.backgroundColor = '#ff0000';
     }
+
+
 </script>
 
 <?php
 header("Content-Type:text/html; charset=utf-8");
 $main_folder = "D:/rathena/conf/";
-$main_folder = "C:/my/rathena/conf/";
+//$main_folder = "C:/my/rathena/conf/";
 
 $read_conf_list = array(
     0 => "char_athena.conf",
@@ -226,7 +227,7 @@ foreach ($getnew_ as $name => $item)
         echo "<td>";
         echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$value[1]."' size= ".(strlen($value[1])+5)." style='color: darkgrey' readonly='readonly' tabindex='-1'><br>";
         echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$valuetemp."' size= ".(strlen($valuetemp)+5)." style='background-color: $backcolor' onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
-        if($valuetemp!=$value[1])
+        if(isset($value[2]))
         {
             echo "<script>check('$name^$number','$name',$number);</script>";
         }
@@ -238,4 +239,3 @@ foreach ($getnew_ as $name => $item)
     echo "</tbody>";
 }
 echo "</table></div></form>";
-
