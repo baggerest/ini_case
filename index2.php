@@ -115,24 +115,66 @@ $save_txt_file_list = get_conf_set_list($main_folder,$save_txt);
 echo "<table border='1'>";
 foreach ($conf_file_list as $filename => $setlist)
 {
-    echo "<tr><th colspan='3'>$filename</th></tr>";
+    $check = true;
+    echo "<tr><th colspan='2'>$filename</th><th colspan='2'>$save_txt_[$filename]</th></tr>";
     foreach ($setlist as $setname => $value)
     {
-        echo "<tr>";
         if($setname!='import')
         {
+            echo "<tr>";
             echo "<td>$setname</td><td>$value</td>";
             if(isset($save_txt_file_list[$save_txt_[$filename]][$setname]))
             {
-                echo "<td>{$save_txt_file_list[$save_txt_[$filename]][$setname]}</td>";
+                echo "<td><input type='text' value='{$save_txt_file_list[$save_txt_[$filename]][$setname]}' style='border: none'></td>";
+            }else{
+                echo "<td><input type='text' style='border: none'></td>";
             }
+            if($check)
+            {
+                $check = false;
+                $count = count($setlist);
+                if(isset($conf_file_list[$filename]['import']))
+                {
+                    $count += count($conf_file_list[$filename]['import'])-1;
+                }
+                echo "<td rowspan='$count'><textarea spellcheck='false' style='border: none;height: ".($count*27)."px'>";
+                if(isset($save_txt_file_list[$save_txt_[$filename]]['import']))
+                {
+                    $temp = $save_txt_file_list[$save_txt_[$filename]]['import'];
+                    foreach ($temp as $importvalue)
+                    {
+                        echo $importvalue."\n";
+                    }
+                }
+                echo "</textarea></td>";
+            }
+            echo "</tr>";
         }else{
             foreach ($value as $listindex => $item)
             {
-                echo "<tr><td>$setname</td><td>$item</td></tr>";
+                echo "<tr><td>$setname</td><td colspan='1'>$item</td><td></td>";
+                if($check)
+                {
+                    $check = false;
+                    $count = count($setlist);
+                    if(isset($conf_file_list[$filename]['import']))
+                    {
+                        $count += count($conf_file_list[$filename]['import'])-1;
+                    }
+                    echo "<td rowspan='$count'><textarea spellcheck='false' style='border: none;height: ".($count*27)."px'>";
+                    if(isset($save_txt_file_list[$save_txt_[$filename]]['import']))
+                    {
+                        $temp = $save_txt_file_list[$save_txt_[$filename]]['import'];
+                        foreach ($temp as $importvalue)
+                        {
+                            echo $importvalue."\n";
+                        }
+                    }
+                    echo "</textarea></td>";
+                }
+                echo "</tr>";
             }
         }
-        echo "</tr>";
     }
 }
 echo "</table>";
