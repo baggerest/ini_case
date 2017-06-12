@@ -123,7 +123,7 @@ if(isset($_POST['setup']))
             if($setname=='setup' or $value=='' or ($key>7 && $analysis[1]=='import')) {
                 continue;
             }
-            echo $setname." | ".$value."<br>";
+            echo $analysis[0]." | ".$value."<br>";
         }
     }catch (Exception $e) {
         echo $e;
