@@ -1,6 +1,6 @@
 <?php
 $main_folder = "D:/rathena/conf/";
-$main_folder = "C:/my/rathena/conf/";
+//$main_folder = "C:/my/rathena/conf/";
 
 $read_conf_list = array(
     0 => "battle_athena.conf",
@@ -114,11 +114,29 @@ function go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_fi
     echo "</textarea></td>";
 }
 
+if(isset($_POST['setup']))
+{
+    try {
+        foreach ($_POST as $setname => $value) {
+            $analysis = explode('^',str_replace('_conf','.conf',$setname));
+            $key = array_search($analysis[0],$read_conf_list);
+            if($setname=='setup' or $value=='' or ($key>7 && $analysis[1]=='import')) {
+                continue;
+            }
+            echo $setname." | ".$value."<br>";
+        }
+    }catch (Exception $e) {
+        echo $e;
+    }
+}
 $conf_file_list = get_conf_set_list($main_folder,$read_conf_list);
 $save_txt_file_list = get_conf_set_list($main_folder,$save_txt);
 
 $td_height_px = 27;
 echo "<form action='' method='post'>";
+echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
+echo "<input type='submit' name='setup' value='complete Setup' style='border-style: dotted'>";
+echo "</div>";
 echo "<table id='set_table' border='1' align='center' style='border-style: dashed;border-color:#FFAC55;padding:5px;text-align: center'>";
 foreach ($conf_file_list as $filename => $setlist) {
     $check = true;
