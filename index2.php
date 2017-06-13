@@ -1,6 +1,12 @@
 <?php
-$main_folder = "D:/rathena/conf/";
-//$main_folder = "C:/my/rathena/conf/";
+$main_folder = "";
+switch ($_ENV['COMPUTERNAME']) {
+    case 'DESKTOP-6OVHJN1':
+        $main_folder = "C:/my/rathena/conf/";
+        break;
+    default:
+        $main_folder = "D:/rathena/conf/";
+}
 
 $read_conf_list = array(
     0 => "battle_athena.conf",
@@ -104,7 +110,7 @@ function go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_fi
 {
     $count = count($setlist);
     $count += isset($conf_file_list[$filename]['import']) ? count($conf_file_list[$filename]['import']) - 1 : 0;
-    echo "<td rowspan='$count' style='border-color: darkgreen'><textarea id='$filename^import' name='$filename^import' spellcheck='false' style='height: " . ($count * $td_height_px) . "px' onchange='sameway(this.id);'>";
+    echo "<td rowspan='$count' style='border-color: darkgreen'><textarea id='$filename^import' name='$filename^import' spellcheck='false' style='width: 300px;height: " . ($count * $td_height_px) . "px' onchange='sameway(this.id);'>";
     if (isset($save_txt_file_list[$save_txt_[$filename]]['import'])) {
         $temp = $save_txt_file_list[$save_txt_[$filename]]['import'];
         foreach ($temp as $importvalue) {
@@ -162,7 +168,7 @@ foreach ($conf_file_list as $filename => $setlist) {
             $inputid = $filename . "^" . $setname;
             $inputvalue = isset($save_txt_file_list[$save_txt_[$filename]][$setname]) ? $save_txt_file_list[$save_txt_[$filename]][$setname] : "";
             echo "<td><b>$setname</b></td>";
-            echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);'></td>";
+            echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);' spellcheck='false'></td>";
             if ($check) {
                 $check = false;
                 go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_);
@@ -179,17 +185,17 @@ foreach ($conf_file_list as $filename => $setlist) {
             }
         }
     }
-    foreach ($save_txt_file_list as $txtfile => $savelist) {
-        if($save_txt_[$filename]==$txtfile) {
-            foreach ($savelist as $savesetname => $savevalue) {
-                if($savesetname!='import' && !in_array($savesetname,$setlist)) {
-                    echo "<tr>";
-                    echo "<td><input type='text' readonly></td><td><input type='text' readonly></td>";
-                    echo "<td><b>$savesetname</b></td>";
-                    $saveid = $filename . "^" . $savesetname;
-                    echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$saveid' name='$saveid' value='$savevalue' onkeyup='chedklengh(this.id);'></td>";
-                    echo "<td></td></tr>";
-                }
+    if(array_search($filename,$read_conf_list)>0 && array_search($filename,$read_conf_list)<8 && isset($save_txt_file_list[$save_txt_[$filename]])) {
+        foreach ($save_txt_file_list[$save_txt_[$filename]] as $savename => $savevalue) {
+            if($savename!='import' && !in_array($savename,array_keys($setlist))) {
+                echo "<tr>";
+                echo "<td><input type='text' readonly></td>";
+                echo "<td><input type='text' readonly></td>";
+                echo "<td><b>$savename</b></td>";
+                $saveid = $filename . "^" . $savename;
+                echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$saveid' name='$saveid' value='$savevalue' onkeyup='chedklengh(this.id);' spellcheck='false'></td>";
+                echo "<td><input type='text' readonly></td>";
+                echo "</tr>";
             }
         }
     }
