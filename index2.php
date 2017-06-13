@@ -1,6 +1,6 @@
 <?php
 $main_folder = "D:/rathena/conf/";
-$main_folder = "C:/my/rathena/conf/";
+//$main_folder = "C:/my/rathena/conf/";
 
 $read_conf_list = array(
     0 => "battle_athena.conf",
@@ -104,11 +104,11 @@ function go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_fi
 {
     $count = count($setlist);
     $count += isset($conf_file_list[$filename]['import']) ? count($conf_file_list[$filename]['import']) - 1 : 0;
-    echo "<td rowspan='$count'><textarea id='$filename^import' name='$filename^import' spellcheck='false' style='height: " . ($count * $td_height_px) . "px' onchange='sameway(this.id);'>";
+    echo "<td rowspan='$count' style='border-color: darkgreen'><textarea id='$filename^import' name='$filename^import' spellcheck='false' style='height: " . ($count * $td_height_px) . "px' onchange='sameway(this.id);'>";
     if (isset($save_txt_file_list[$save_txt_[$filename]]['import'])) {
         $temp = $save_txt_file_list[$save_txt_[$filename]]['import'];
         foreach ($temp as $importvalue) {
-            echo $importvalue . "\n";
+            echo "import: " . $importvalue . "\n";
         }
     }
     echo "</textarea></td>";
@@ -119,17 +119,22 @@ if(isset($_POST['setup']))
     $writetxt = array();
     try {
         foreach ($_POST as $setname => $value) {
-            $analysis = explode('^',str_replace('_conf','.conf',$setname));
-            $key = array_search($analysis[0],$read_conf_list);
-            if($setname=='setup' or $value=='' or ($key>7 && $analysis[1]=='import')) {
+            $analysis = explode('^', str_replace('_conf', '.conf', $setname));
+            $key = array_search($analysis[0], $read_conf_list);
+            if ($setname == 'setup' or ($value == '' && $analysis[1] != 'import') or ($key > 7 && $analysis[1] == 'import')) {
                 continue;
             }
-            $writetxt[$analysis[0]][] = $analysis[1].": ".$value;
+            $writetxt[$analysis[0]][] = trim($value) == '' ? '' : $analysis[1] . ": " . str_replace('import: ','',$value);
         }
-        foreach ($writetxt as $key => $writesetlist) {
-            $fop = fopen($main_folder.$save_txt_[$key],array_search($key,$read_conf_list)>7?'a':'w');
-            foreach ($writesetlist as $set) {
-                fwrite($fop,"$set\r\n");
+        foreach ($writetxt as $confpath => $setlist) {
+            if (array_search($confpath, $read_conf_list) < 8) {
+                $fop = fopen($main_folder.$save_txt_[$confpath],"w");
+            } else {
+                $fop = fopen($main_folder.$save_txt_[$confpath],"a");
+            }
+            foreach ($setlist as $item) {
+                $item .= $item ==''?'':"\r\n";
+                fwrite($fop,$item);
             }
             fclose($fop);
         }
@@ -145,19 +150,19 @@ echo "<form action='' method='post'>";
 echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
 echo "<input type='submit' name='setup' value='complete Setup' style='border-style: dotted'>";
 echo "</div>";
-echo "<div align='center'>";
-echo "<table id='set_table' border='1' align='center' style='border-style: dashed;border-color:#FFAC55;padding:5px;text-align: center'>";
+echo "<table id='set_table' align='center' border='1' style='border-style: dashed;border-color:#FFAC55;padding:5px;text-align: center'>";
 foreach ($conf_file_list as $filename => $setlist) {
     $check = true;
-    echo "<tr><th colspan='2' onclick='show_hide(\"$filename\");'>$filename</th><th colspan='2' onclick='show_hide(\"$filename\");'>$save_txt_[$filename]</th></tr>";
+    echo "<tr><th colspan='2' onclick='show_hide(\"$filename\");'>$filename</th><th colspan='3' onclick='show_hide(\"$filename\");'>$save_txt_[$filename]</th></tr>";
     echo "<tbody id='$filename' style='display: none'>";
     foreach ($setlist as $setname => $value) {
         if ($setname != 'import') {
             echo "<tr>";
-            echo "<td>$setname</td><td>$value</td>";
+            echo "<td><b>$setname</b></td><td style='color: darkgray'><I>$value</I></td>";
             $inputid = $filename . "^" . $setname;
             $inputvalue = isset($save_txt_file_list[$save_txt_[$filename]][$setname]) ? $save_txt_file_list[$save_txt_[$filename]][$setname] : "";
-            echo "<td><input type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);'></td>";
+            echo "<td><b>$setname</b></td>";
+            echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);'></td>";
             if ($check) {
                 $check = false;
                 go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_);
@@ -165,7 +170,7 @@ foreach ($conf_file_list as $filename => $setlist) {
             echo "</tr>";
         } else {
             foreach ($value as $listindex => $item) {
-                echo "<tr><td>$setname</td><td>$item</td><td><input type='text' readonly></td>";
+                echo "<tr><td><b>$setname</b></td><td style='color: darkgray'><I>$item</I></td><td><input type='text' readonly></td><td><input type='text' readonly></td>";
                 if ($check) {
                     $check = false;
                     go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_);
@@ -174,10 +179,23 @@ foreach ($conf_file_list as $filename => $setlist) {
             }
         }
     }
+    foreach ($save_txt_file_list as $txtfile => $savelist) {
+        if($save_txt_[$filename]==$txtfile) {
+            foreach ($savelist as $savesetname => $savevalue) {
+                if($savesetname!='import' && !in_array($savesetname,$setlist)) {
+                    echo "<tr>";
+                    echo "<td><input type='text' readonly></td><td><input type='text' readonly></td>";
+                    echo "<td><b>$savesetname</b></td>";
+                    $saveid = $filename . "^" . $savesetname;
+                    echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$saveid' name='$saveid' value='$savevalue' onkeyup='chedklengh(this.id);'></td>";
+                    echo "<td></td></tr>";
+                }
+            }
+        }
+    }
     echo "</tbody>";
 }
 echo "</table>";
-echo "</div>";
 echo "</form>";
 ?>
 
