@@ -152,10 +152,10 @@ $conf_file_list = get_conf_set_list($main_folder,$read_conf_list);
 $save_txt_file_list = get_conf_set_list($main_folder,$save_txt);
 
 $td_height_px = 27;
-echo "<form action='' method='post'>";
+echo "<form id='set_form' action='' method='post'>";
 echo "<div style='position: fixed;top: 20px;left: 20px;text-align: left'>";
-echo "<a href='javascript:Unfolded();'>Unfolded conf set list</a><br>";
-echo "<a href='javascript:closure();'>closure conf set list</a><br>";
+echo "<a href='javascript:Unfolded();'>Unfolded list</a><br>";
+echo "<a href='javascript:closure();'>closure list</a><br>";
 echo "</div>";
 echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
 echo "<input type='submit' name='setup' value='complete Setup' style='border-style: dotted'>";
@@ -163,7 +163,7 @@ echo "</div>";
 echo "<table id='set_table' align='center' border='1' style='border-style: dashed;border-color:#FFAC55;padding:5px;text-align: center'>";
 foreach ($conf_file_list as $filename => $setlist) {
     $check = true;
-    echo "<tr><th colspan='2' onclick='show_hide(\"$filename\");'>$filename</th><th colspan='3' onclick='show_hide(\"$filename\");'>$save_txt_[$filename]</th></tr>";
+    echo "<tr><th id='{$filename}_conf' colspan='2' onclick='show_hide(\"$filename\");'>$filename</th><th id='{$filename}_txt' colspan='3' onclick='show_hide(\"$filename\");'>$save_txt_[$filename]</th></tr>";
     echo "<tbody id='$filename' style='display: none'>";
     foreach ($setlist as $setname => $value) {
         if ($setname != 'import') {
@@ -214,13 +214,13 @@ echo "</form>";
 
     function Unfolded() {
         for(var va in setlist) {
-            document.getElementById(va).style.display = '';
+            document.getElementById(setlist[va]).style.display = '';
         }
     }
     
     function closure() {
         for(var va in setlist) {
-            document.getElementById(va).style.display = 'none';
+            document.getElementById(setlist[va]).style.display = 'none';
         }
     }
     
