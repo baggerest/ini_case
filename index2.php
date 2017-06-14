@@ -153,6 +153,10 @@ $save_txt_file_list = get_conf_set_list($main_folder,$save_txt);
 
 $td_height_px = 27;
 echo "<form action='' method='post'>";
+echo "<div style='position: fixed;top: 20px;left: 20px;text-align: left'>";
+echo "<a href='javascript:Unfolded();'>Unfolded conf set list</a><br>";
+echo "<a href='javascript:closure();'>closure conf set list</a><br>";
+echo "</div>";
 echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
 echo "<input type='submit' name='setup' value='complete Setup' style='border-style: dotted'>";
 echo "</div>";
@@ -168,7 +172,7 @@ foreach ($conf_file_list as $filename => $setlist) {
             $inputid = $filename . "^" . $setname;
             $inputvalue = isset($save_txt_file_list[$save_txt_[$filename]][$setname]) ? $save_txt_file_list[$save_txt_[$filename]][$setname] : "";
             echo "<td><b>$setname</b></td>";
-            echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);' spellcheck='false'></td>";
+            echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
             if ($check) {
                 $check = false;
                 go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_);
@@ -193,7 +197,7 @@ foreach ($conf_file_list as $filename => $setlist) {
                 echo "<td><input type='text' readonly></td>";
                 echo "<td><b>$savename</b></td>";
                 $saveid = $filename . "^" . $savename;
-                echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$saveid' name='$saveid' value='$savevalue' onkeyup='chedklengh(this.id);' spellcheck='false'></td>";
+                echo "<td style='border-color: darkgreen'><input style='color: blue' type='text' id='$saveid' name='$saveid' value='$savevalue' onkeyup='chedklengh(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
                 echo "<td><input type='text' readonly></td>";
                 echo "</tr>";
             }
@@ -206,6 +210,20 @@ echo "</form>";
 ?>
 
 <script type="text/javascript">
+    var setlist = new Array(<?php foreach (array_keys($conf_file_list) as $name) {echo "\"$name\",";} ?>);
+
+    function Unfolded() {
+        for(var va in setlist) {
+            document.getElementById(va).style.display = '';
+        }
+    }
+    
+    function closure() {
+        for(var va in setlist) {
+            document.getElementById(va).style.display = 'none';
+        }
+    }
+    
     function show_hide(id) {
         document.getElementById(id).style.display = document.getElementById(id).style.display == 'none' ? '' : 'none';
     }
