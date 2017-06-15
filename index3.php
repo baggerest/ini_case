@@ -1,3 +1,25 @@
+<script type="text/javascript">
+    var thaa = new Array();
+    function check(id)
+    {
+        thname = id.split('^')[0];
+        setname = id.split('^')[1];
+        if(thaa[thname]==null)thaa[thname]=new Array();
+        if(thaa[thname][setname]==null)thaa[thname][setname] = 0;
+        if(document.getElementById(id).value!='')
+        {
+            document.getElementById(id).style.backgroundColor = '#ff0000';
+            thaa[thname][setname] = 1;
+        }else{
+            document.getElementById(id).style.backgroundColor = '';
+            thaa[thname][setname] = 0;
+        }
+        var sum = thaa[thname].reduce(function(a, b) {
+            return a + b;
+        });
+        document.getElementById(thname+'_txt').style.backgroundColor = sum!=0?'#ff0000':'#BDB885';
+    }
+</script>
 <?php
 $main_folder = "";
 switch ($_ENV['COMPUTERNAME']) {
@@ -6,6 +28,7 @@ switch ($_ENV['COMPUTERNAME']) {
         break;
     default:
         $main_folder = "D:/rathena/conf/";
+        break;
 }
 
 $read_conf_list = array(
@@ -113,11 +136,11 @@ function get_conf_set_list($main_folder,$read_conf_list)
     }
 }
 
-function go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_)
+function go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color)
 {
     $count = count($setlist);
     $count += isset($conf_file_list[$filename]['import']) ? count($conf_file_list[$filename]['import']) - 1 : 0;
-    echo "<td rowspan='$count' style='border-color: darkgreen'><textarea id='$filename^import' name='$filename^import' spellcheck='false' style='width: 300px;height: " . ($count * $td_height_px) . "px' onchange='sameway(this.id);'>";
+    echo "<td rowspan='$count' style='border-color: $show_set_border_color' title='Edit $filename import'><textarea id='$filename^import' name='$filename^import' spellcheck='false' style='height: " . ($count * $td_height_px) . "px' onchange='sameway(this.id);'>";
     if (isset($save_txt_file_list[$save_txt_[$filename]]['import'])) {
         $temp = $save_txt_file_list[$save_txt_[$filename]]['import'];
         foreach ($temp as $importvalue) {
@@ -161,7 +184,10 @@ $save_txt_file_list = get_conf_set_list($main_folder,$save_txt);
 $td_height_px = 27;
 $symbol = "&prime;";
 $dsymbol = "&Prime;";
-echo "<form id='set_form' action='' method='post'>";
+$conf_set = 'darkgray';
+$show_set_font_color = 'blue';
+$show_set_border_color = 'darkgreen';
+echo "<form id='set_form' action='{$_SERVER['PHP_SELF']}' method='post'>";
 echo "<div style='position: fixed;top: 20px;left: 20px;text-align: left'>";
 echo "<a href='javascript:Unfolded();'>Unfolded list</a><br>";
 echo "<a href='javascript:closure();'>closure list</a><br>";
@@ -177,26 +203,31 @@ foreach ($conf_file_list as $filename => $setlist) {
     foreach ($setlist as $setname => $value) {
         if ($setname != 'import') {
             $value[1] = str_replace("'",$symbol,$value[1]);
-            $value[1] = str_replace("'",$dsymbol,$value[1]);
+            $value[1] = str_replace('"',$dsymbol,$value[1]);
+            $value[1] = trim($value[1]);
             echo "<tr>";
-            echo "<td title='$value[1]'><b>$setname</b></td><td style='color: darkgray' title='$value[1]'><I>$value[0]</I></td>";
+            echo "<td title='$value[1]'><b>$setname</b></td><td style='color: $conf_set' title='$value[1]'><I>$value[0]</I></td>";
             $inputid = $filename . "^" . $setname;
             $inputvalue = isset($save_txt_file_list[$save_txt_[$filename]][$setname]) ? $save_txt_file_list[$save_txt_[$filename]][$setname][0] : "";
             echo "<td title='$value[1]'><b>$setname</b></td>";
-            echo "<td style='border-color: darkgreen' title='$value[1]'><input style='color: blue' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
+            echo "<td style='border-color: $show_set_border_color' title='$value[1]'><input style='color: $show_set_font_color' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);check(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
+            if($inputvalue!='') {
+                echo "<script>check('$inputid');</script>";
+            }
             if ($check) {
                 $check = false;
-                go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_);
+                go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color);
             }
             echo "</tr>";
         } else {
             foreach ($value as $listindex => $item) {
                 $item[1] = str_replace("'",$symbol,$item[1]);
-                $item[1] = str_replace("'",$dsymbol,$item[1]);
-                echo "<tr><td title='$item[1]'><b>$setname</b></td><td style='color: darkgray' title='$item[1]'><I>$item[0]</I></td><td><input type='text' readonly></td><td><input type='text' readonly></td>";
+                $item[1] = str_replace('"',$dsymbol,$item[1]);
+                $item[1] = trim($item[1]);
+                echo "<tr><td title='$item[1]'><b>$setname</b></td><td style='color: $conf_set' title='$item[1]'><I>$item[0]</I></td><td><input type='text' readonly></td><td><input type='text' readonly></td>";
                 if ($check) {
                     $check = false;
-                    go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_);
+                    go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color);
                 }
                 echo "</tr>";
             }
@@ -206,15 +237,19 @@ foreach ($conf_file_list as $filename => $setlist) {
         foreach ($save_txt_file_list[$save_txt_[$filename]] as $savename => $savevalue) {
             if($savename!='import' && !in_array($savename,array_keys($setlist))) {
                 $savevalue[1] = str_replace("'",$symbol,$savevalue[1]);
-                $savevalue[1] = str_replace("'",$dsymbol,$savevalue[1]);
+                $savevalue[1] = str_replace('"',$dsymbol,$savevalue[1]);
+                $savevalue[1] = trim($savevalue[1]);
                 echo "<tr>";
                 echo "<td><input type='text' readonly></td>";
                 echo "<td><input type='text' readonly></td>";
                 echo "<td title='$savevalue[1]'><b>$savename</b></td>";
                 $saveid = $filename . "^" . $savename;
-                echo "<td style='border-color: darkgreen' title='$savevalue[1]'><input style='color: blue' type='text' id='$saveid' name='$saveid' value='$savevalue[0]' onkeyup='chedklengh(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
+                echo "<td style='border-color: $show_set_border_color' title='$savevalue[1]'><input style='color: $show_set_font_color' type='text' id='$saveid' name='$saveid' value='$savevalue[0]' onkeyup='chedklengh(this.id);check(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
                 echo "<td><input type='text' readonly></td>";
                 echo "</tr>";
+                if($savevalue[0]!='') {
+                    echo "<script>check('$saveid');</script>";
+                }
             }
         }
     }
