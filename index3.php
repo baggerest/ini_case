@@ -1,6 +1,6 @@
 <?php
-include 'head_javascript.php';
 include 'config.php';
+include 'head_javascript.php';
 include 'function.php';
 include 'style.php';
 
