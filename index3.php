@@ -1,154 +1,8 @@
-<script type="text/javascript">
-    var thaa = new Array();
-    function check(id)
-    {
-        thname = id.split('^')[0];
-        setname = id.split('^')[1];
-        if(thaa[thname]==null)thaa[thname]=new Array();
-        if(thaa[thname][setname]==null)thaa[thname][setname] = 0;
-        if(document.getElementById(id).value!='')
-        {
-            document.getElementById(id).style.backgroundColor = '#ff0000';
-            thaa[thname][setname] = 1;
-        }else{
-            document.getElementById(id).style.backgroundColor = '';
-            thaa[thname][setname] = 0;
-        }
-        var sum = thaa[thname].reduce(function(a, b) {
-            return a + b;
-        });
-        document.getElementById(thname+'_txt').style.backgroundColor = sum!=0?'#ff0000':'#BDB885';
-    }
-</script>
 <?php
-$main_folder = "";
-switch ($_ENV['COMPUTERNAME']) {
-    case 'DESKTOP-6OVHJN1':
-        $main_folder = "C:/my/rathena/conf/";
-        break;
-    default:
-        $main_folder = "D:/rathena/conf/";
-        break;
-}
-
-$read_conf_list = array(
-    0 => "battle_athena.conf",
-    1 => "char_athena.conf",
-    2 => "inter_athena.conf",
-    3 => "log_athena.conf",
-    4 => "login_athena.conf",
-    5 => "map_athena.conf",
-    6 => "packet_athena.conf",
-    7 => "script_athena.conf",
-    8 => "battle/battle.conf",
-    9 => "battle/battleground.conf",
-    10 => "battle/client.conf",
-    11 => "battle/drops.conf",
-    12 => "battle/exp.conf",
-    13 => "battle/feature.conf",
-    14 => "battle/gm.conf",
-    15 => "battle/guild.conf",
-    16 => "battle/homunc.conf",
-    17 => "battle/items.conf",
-    18 => "battle/misc.conf",
-    19 => "battle/monster.conf",
-    20 => "battle/party.conf",
-    21 => "battle/pet.conf",
-    22 => "battle/player.conf",
-    23 => "battle/skill.conf",
-    24 => "battle/status.conf",
-);
-
-$save_txt = array(
-    0 => "import/battle_conf.txt",
-    1 => "import/char_conf.txt",
-    2 => "import/inter_conf.txt",
-    3 => "import/log_conf.txt",
-    4 => "import/login_conf.txt",
-    5 => "import/map_conf.txt",
-    6 => "import/packet_conf.txt",
-    7 => "import/script_conf.txt",
-);
-
-$save_txt_ = array(
-    $read_conf_list[0] => $save_txt[0],
-    $read_conf_list[1] => $save_txt[1],
-    $read_conf_list[2] => $save_txt[2],
-    $read_conf_list[3] => $save_txt[3],
-    $read_conf_list[4] => $save_txt[4],
-    $read_conf_list[5] => $save_txt[5],
-    $read_conf_list[6] => $save_txt[6],
-    $read_conf_list[7] => $save_txt[7],
-    $read_conf_list[8] => $save_txt[0],
-    $read_conf_list[9] => $save_txt[0],
-    $read_conf_list[10] => $save_txt[0],
-    $read_conf_list[11] => $save_txt[0],
-    $read_conf_list[12] => $save_txt[0],
-    $read_conf_list[13] => $save_txt[0],
-    $read_conf_list[14] => $save_txt[0],
-    $read_conf_list[15] => $save_txt[0],
-    $read_conf_list[16] => $save_txt[0],
-    $read_conf_list[17] => $save_txt[0],
-    $read_conf_list[18] => $save_txt[0],
-    $read_conf_list[19] => $save_txt[0],
-    $read_conf_list[20] => $save_txt[0],
-    $read_conf_list[21] => $save_txt[0],
-    $read_conf_list[22] => $save_txt[0],
-    $read_conf_list[23] => $save_txt[0],
-    $read_conf_list[24] => $save_txt[0],
-);
-
-function get_conf_set_list($main_folder,$read_conf_list)
-{
-    try {
-        $conf_list = array();
-        foreach ($read_conf_list as $value) {
-            $file = fopen($main_folder . $value, "r");
-            if ($file) {
-                $title = "";
-                while (!feof($file)) {
-                    $contents = fgets($file);
-                    $contents = trim($contents);
-                    if ($contents !== "" && substr($contents, 0, 2) !== '//') {
-                        if (!strpos($contents, "//")) {
-                            $sp[0] = substr($contents, 0, strpos($contents, ":"));
-                            $sp[1] = trim(substr($contents, strpos($contents, ":") + 1));
-                            if ($sp[0] == 'import') {
-                                $conf_list[$value][$sp[0]][] = array($sp[1],$title);
-                            } else {
-                                $conf_list[$value][$sp[0]] = array($sp[1],$title);
-                            }
-                        }
-                    } else {
-                        if ($contents == "") {
-                            $title = "";
-                        } else {
-                            $title .= $contents."\n";
-                        }
-                    }
-                }
-                fclose($file);
-            }
-        }
-        return $conf_list;
-    } catch (Exception $e) {
-        echo $e;
-    }
-}
-
-function go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color)
-{
-    $count = count($setlist);
-    $count += isset($conf_file_list[$filename]['import']) ? count($conf_file_list[$filename]['import']) - 1 : 0;
-    echo "<td rowspan='$count' style='border-color: $show_set_border_color' title='Edit $filename import'><textarea id='$filename^import' name='$filename^import' spellcheck='false' style='height: " . ($count * $td_height_px) . "px' onchange='sameway(this.id);'>";
-    if (isset($save_txt_file_list[$save_txt_[$filename]]['import'])) {
-        $temp = $save_txt_file_list[$save_txt_[$filename]]['import'];
-        foreach ($temp as $importvalue) {
-            echo "import: " . $importvalue[0] . "\n";
-        }
-    }
-    echo "</textarea></td>";
-}
+include 'head_javascript.php';
+include 'config.php';
+include 'function.php';
+include 'style.php';
 
 if(isset($_POST['setup']))
 {
@@ -160,7 +14,12 @@ if(isset($_POST['setup']))
             if ($setname == 'setup' or ($value == '' && $analysis[1] != 'import') or ($key > 7 && $analysis[1] == 'import')) {
                 continue;
             }
-            $writetxt[$analysis[0]][] = trim($value) == '' ? '' : $analysis[1] . ": " . str_replace('import: ','',$value);
+            $setv = str_replace('import: ','',$value);
+            if($analysis[1] == 'import' && !strpos($setv,"import: ")) {
+                $analysis[1] = substr($value, 0, strpos($value, ":"));
+                $setv = trim(substr($value, strpos($value, ":") + 1));
+            }
+            $writetxt[$analysis[0]][] = trim($value) == '' ? '' : $analysis[1] . ": " . $setv;
         }
         foreach ($writetxt as $confpath => $setlist) {
             if (array_search($confpath, $read_conf_list) < 8) {
@@ -178,15 +37,9 @@ if(isset($_POST['setup']))
         echo $e;
     }
 }
+
 $conf_file_list = get_conf_set_list($main_folder,$read_conf_list);
 $save_txt_file_list = get_conf_set_list($main_folder,$save_txt);
-
-$td_height_px = 27;
-$symbol = "&prime;";
-$dsymbol = "&Prime;";
-$conf_set = 'darkgray';
-$show_set_font_color = 'blue';
-$show_set_border_color = 'darkgreen';
 echo "<form id='set_form' action='{$_SERVER['PHP_SELF']}' method='post'>";
 echo "<div style='position: fixed;top: 20px;left: 20px;text-align: left'>";
 echo "<a href='javascript:Unfolded();'>Unfolded list</a><br>";
@@ -198,25 +51,28 @@ echo "</div>";
 echo "<table id='set_table' align='center' border='1' style='border-style: dashed;border-color:#FFAC55;padding:5px;text-align: center'>";
 foreach ($conf_file_list as $filename => $setlist) {
     $check = true;
-    echo "<tr><th id='{$filename}_conf' colspan='2' onclick='show_hide(\"$filename\");'>$filename</th><th id='{$filename}_txt' colspan='3' onclick='show_hide(\"$filename\");'>$save_txt_[$filename]</th></tr>";
+    echo "<tr><th id='{$filename}_conf' colspan='2' onclick='show_hide(\"$filename\");'>$filename</th><th id='{$filename}_txt' colspan='3' onclick='show_hide(\"$filename\");'>$save_txt_[$filename]</th><td><input type='submit' value='cleanAll' onclick='cleanall(\"$filename\");return false;'></td></tr>";
     echo "<tbody id='$filename' style='display: none'>";
+    $index = 0;
     foreach ($setlist as $setname => $value) {
+        $index++;
         if ($setname != 'import') {
             $value[1] = str_replace("'",$symbol,$value[1]);
             $value[1] = str_replace('"',$dsymbol,$value[1]);
             $value[1] = trim($value[1]);
             echo "<tr>";
             echo "<td title='$value[1]'><b>$setname</b></td><td style='color: $conf_set' title='$value[1]'><I>$value[0]</I></td>";
-            $inputid = $filename . "^" . $setname;
+            $inputid = $filename . "^" . $index;
+            $inputname = $filename . "^" . $setname;
             $inputvalue = isset($save_txt_file_list[$save_txt_[$filename]][$setname]) ? $save_txt_file_list[$save_txt_[$filename]][$setname][0] : "";
             echo "<td title='$value[1]'><b>$setname</b></td>";
-            echo "<td style='border-color: $show_set_border_color' title='$value[1]'><input style='color: $show_set_font_color' type='text' id='$inputid' name='$inputid' value='$inputvalue' onkeyup='chedklengh(this.id);check(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
+            echo "<td style='border-color: $show_set_border_color' title='$value[1]'><input style='color: $show_set_font_color' type='text' id='$inputid' name='$inputname' value='$inputvalue' onkeyup='chedklengh(this.id);check(this.id);' onClick='this.select();' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
             if($inputvalue!='') {
                 echo "<script>check('$inputid');</script>";
             }
             if ($check) {
                 $check = false;
-                go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color);
+                go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color,$show_set_font_color);
             }
             echo "</tr>";
         } else {
@@ -227,7 +83,7 @@ foreach ($conf_file_list as $filename => $setlist) {
                 echo "<tr><td title='$item[1]'><b>$setname</b></td><td style='color: $conf_set' title='$item[1]'><I>$item[0]</I></td><td><input type='text' readonly></td><td><input type='text' readonly></td>";
                 if ($check) {
                     $check = false;
-                    go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color);
+                    go_import($setlist,$conf_file_list,$filename,$td_height_px,$save_txt_file_list,$save_txt_,$show_set_border_color,$show_set_font_color);
                 }
                 echo "</tr>";
             }
@@ -236,6 +92,7 @@ foreach ($conf_file_list as $filename => $setlist) {
     if(array_search($filename,$read_conf_list)>0 && array_search($filename,$read_conf_list)<8 && isset($save_txt_file_list[$save_txt_[$filename]])) {
         foreach ($save_txt_file_list[$save_txt_[$filename]] as $savename => $savevalue) {
             if($savename!='import' && !in_array($savename,array_keys($setlist))) {
+                $index++;
                 $savevalue[1] = str_replace("'",$symbol,$savevalue[1]);
                 $savevalue[1] = str_replace('"',$dsymbol,$savevalue[1]);
                 $savevalue[1] = trim($savevalue[1]);
@@ -243,8 +100,9 @@ foreach ($conf_file_list as $filename => $setlist) {
                 echo "<td><input type='text' readonly></td>";
                 echo "<td><input type='text' readonly></td>";
                 echo "<td title='$savevalue[1]'><b>$savename</b></td>";
-                $saveid = $filename . "^" . $savename;
-                echo "<td style='border-color: $show_set_border_color' title='$savevalue[1]'><input style='color: $show_set_font_color' type='text' id='$saveid' name='$saveid' value='$savevalue[0]' onkeyup='chedklengh(this.id);check(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;'></td>";
+                $saveid = $filename . "^" . $index;
+                $inputsavename = $filename . "^" . $savename;
+                echo "<td style='border-color: $show_set_border_color' title='$savevalue[1]'><input style='color: $show_set_font_color' type='text' id='$saveid' name='$inputsavename' value='$savevalue[0]' onkeyup='chedklengh(this.id);check(this.id);' spellcheck='false' onkeypress='if(event.keyCode==13)return false;' onClick='this.select();'></td>";
                 echo "<td><input type='text' readonly></td>";
                 echo "</tr>";
                 if($savevalue[0]!='') {
@@ -257,56 +115,5 @@ foreach ($conf_file_list as $filename => $setlist) {
 }
 echo "</table>";
 echo "</form>";
+include 'bottom_javascript.php';
 ?>
-
-<script type="text/javascript">
-    var setlist = new Array(<?php foreach (array_keys($conf_file_list) as $name) {echo "\"$name\",";} ?>);
-
-    function Unfolded() {
-        for(var va in setlist) {
-            document.getElementById(setlist[va]).style.display = '';
-        }
-    }
-
-    function closure() {
-        for(var va in setlist) {
-            document.getElementById(setlist[va]).style.display = 'none';
-        }
-    }
-
-    function show_hide(id) {
-        document.getElementById(id).style.display = document.getElementById(id).style.display == 'none' ? '' : 'none';
-    }
-
-    function chedklengh(id) {
-        obj = document.getElementById(id);
-        obj.size = (obj.value.length > 24 ? obj.value.length : 20);
-    }
-
-    function sameway(id) {
-        arr = new Array(<?php foreach ($save_txt_ as $name => $savefile) {
-            if($savefile==$save_txt[0]) {
-                echo "\"$name^import\",";
-            }
-        } ?>);
-        for(var importtextarea in arr) {
-            if(arr.indexOf(id)!=-1) {
-                document.getElementById(arr[importtextarea]).value = document.getElementById(id).value;
-            }
-        }
-    }
-</script>
-
-<style>
-    th {
-        cursor: pointer;
-        background-color: #BDB885;
-    }
-    input {
-        border: none;
-        text-align: center;
-    }
-    textarea {
-        border: none;
-    }
-</style>
