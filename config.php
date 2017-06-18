@@ -82,4 +82,6 @@ $dsymbol = "&Prime;";
 $conf_set = 'darkgray';
 $show_set_font_color = '#ffffff';
 $show_set_border_color = 'darkgreen';
-$th_font_color = '#ffffff';
+$th_font_size = 20;
+$th_font_color = '#000000';
+$th_back_color = '#BDB885';

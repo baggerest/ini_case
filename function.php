@@ -1,4 +1,58 @@
 <?php
+function check_POST($main_folder,$read_conf_list,$save_txt_)
+{
+    if (isset($_POST['setup'])) {
+        $writetxt = array();
+        try {
+            foreach ($_POST as $setname => $value) {
+                $analysis = explode('^', str_replace('_conf', '.conf', $setname));
+                $key = array_search($analysis[0], $read_conf_list);
+                if ($setname == 'setup' or ($value == '' && $analysis[1] != 'import') or ($key > 7 && $analysis[1] == 'import')) {
+                    continue;
+                }
+
+                //多行、非import、重覆值、battle設定一直重覆設定
+                if ($analysis[1] == "import") {
+                    if($value=="") {
+                        $writetxt[$analysis[0]][] = "";
+                    } else {
+                        $writetxt[$analysis[0]][] = $analysis[1] . ": " . trim(str_replace('import: ', '', $value));
+                    }
+                } else {
+                    if (isset($writetxt[$analysis[0]])) {
+                        if (in_array($analysis[1] . ": " . trim($value), $writetxt[$analysis[0]])) {
+                            continue;
+                        }
+                    }
+                    $writetxt[$analysis[0]][] = $analysis[1] . ": " . trim($value);
+                }
+
+
+//                $setv = str_replace('import: ', '', $value);
+//                if ($analysis[1] == 'import' && !strpos($setv, "import: ")) {
+//                    $analysis[1] = substr($value, 0, strpos($value, ":"));
+//                    $setv = trim(substr($value, strpos($value, ":") + 1));
+//                }
+//                if (isset($writetxt[$analysis[0]])) {
+//                    if (in_array($analysis[1] . ": " . $setv, $writetxt[$analysis[0]])) {
+//                        continue;
+//                    }
+//                }
+//                $writetxt[$analysis[0]][] = trim($value) == '' ? '' : $analysis[1] . ": " . $setv;
+            }
+            foreach ($writetxt as $confpath => $setlist) {
+                $fop = fopen($main_folder . $save_txt_[$confpath], (array_search($confpath, $read_conf_list) < 8) ? "w" : "a");
+                foreach ($setlist as $item) {
+                    $item .= $item == '' ? '' : "\r\n";
+                    fwrite($fop, $item);
+                }
+                fclose($fop);
+            }
+        } catch (Exception $e) {
+            echo $e;
+        }
+    }
+}
 
 function get_conf_set_list($main_folder,$read_conf_list)
 {

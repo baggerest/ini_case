@@ -4,46 +4,15 @@ include 'head_javascript.php';
 include 'function.php';
 include 'style.php';
 
-if(isset($_POST['setup']))
-{
-    $writetxt = array();
-    try {
-        foreach ($_POST as $setname => $value) {
-            $analysis = explode('^', str_replace('_conf', '.conf', $setname));
-            $key = array_search($analysis[0], $read_conf_list);
-            if ($setname == 'setup' or ($value == '' && $analysis[1] != 'import') or ($key > 7 && $analysis[1] == 'import')) {
-                continue;
-            }
-            $setv = str_replace('import: ','',$value);
-            if($analysis[1] == 'import' && !strpos($setv,"import: ")) {
-                $analysis[1] = substr($value, 0, strpos($value, ":"));
-                $setv = trim(substr($value, strpos($value, ":") + 1));
-            }
-            $writetxt[$analysis[0]][] = trim($value) == '' ? '' : $analysis[1] . ": " . $setv;
-        }
-        foreach ($writetxt as $confpath => $setlist) {
-            if (array_search($confpath, $read_conf_list) < 8) {
-                $fop = fopen($main_folder.$save_txt_[$confpath],"w");
-            } else {
-                $fop = fopen($main_folder.$save_txt_[$confpath],"a");
-            }
-            foreach ($setlist as $item) {
-                $item .= $item ==''?'':"\r\n";
-                fwrite($fop,$item);
-            }
-            fclose($fop);
-        }
-    }catch (Exception $e) {
-        echo $e;
-    }
-}
-
+check_POST($main_folder,$read_conf_list,$save_txt_);
 $conf_file_list = get_conf_set_list($main_folder,$read_conf_list);
 $save_txt_file_list = get_conf_set_list($main_folder,$save_txt);
+
 echo "<form id='set_form' action='{$_SERVER['PHP_SELF']}' method='post'>";
 echo "<div style='position: fixed;top: 20px;left: 20px;text-align: left'>";
 echo "<a href='javascript:Unfolded();'>Unfolded list</a><br>";
-echo "<a href='javascript:closure();'>closure list</a><br>";
+echo "<a href='javascript:closure();''>Closure list</a><br>";
+echo "<a href='{$_SERVER['PHP_SELF']}'>Reload file</a><br>";
 echo "</div>";
 echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
 echo "<input type='submit' name='setup' value='complete Setup' style='border-style: dotted'>";
@@ -116,4 +85,3 @@ foreach ($conf_file_list as $filename => $setlist) {
 echo "</table>";
 echo "</form>";
 include 'bottom_javascript.php';
-?>

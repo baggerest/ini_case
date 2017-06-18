@@ -52,6 +52,7 @@
         document.getElementById(item).value = '';
         check(item);
     }
+
     function sameway(id) {
         arr = [<?php foreach ($save_txt_ as $name => $savefile){if($savefile==$save_txt[0])echo "\"$name^import\",";} ?>];
         for(var importtextarea in arr) {
