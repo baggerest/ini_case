@@ -10,13 +10,27 @@ function check_POST($main_folder,$read_conf_list,$save_txt_)
                 if ($setname == 'setup' or ($value == '' && $analysis[1] != 'import') or ($key > 7 && $analysis[1] == 'import')) {
                     continue;
                 }
-
-                //多行、非import、重覆值、battle設定一直重覆設定
                 if ($analysis[1] == "import") {
                     if($value=="") {
                         $writetxt[$analysis[0]][] = "";
                     } else {
-                        $writetxt[$analysis[0]][] = $analysis[1] . ": " . trim(str_replace('import: ', '', $value));
+                        $import = "";
+                        foreach (explode("\n",trim($value)) as $item) {
+                            if(strpos($item,"import:")>=0) {
+                                if(strpos($import,$item)=="" && $key > 0) {
+                                    $import .= $item."\n";
+                                }
+                            } else {
+                                $analysis[1] = substr($item, 0, strpos($item, ":"));
+                                $setv = trim(substr($item, strpos($item, ":") + 1));
+                                if (isset($writetxt[$analysis[0]])) {
+                                    if(in_array($analysis[1] . ": " . $setv,$writetxt[$analysis[0]])) {
+                                        $writetxt[$analysis[0]][] = $analysis[1] . ": " . $setv;
+                                    }
+                                }
+                            }
+                        }
+                        $writetxt[$analysis[0]][] = trim($import);
                     }
                 } else {
                     if (isset($writetxt[$analysis[0]])) {
@@ -26,19 +40,6 @@ function check_POST($main_folder,$read_conf_list,$save_txt_)
                     }
                     $writetxt[$analysis[0]][] = $analysis[1] . ": " . trim($value);
                 }
-
-
-//                $setv = str_replace('import: ', '', $value);
-//                if ($analysis[1] == 'import' && !strpos($setv, "import: ")) {
-//                    $analysis[1] = substr($value, 0, strpos($value, ":"));
-//                    $setv = trim(substr($value, strpos($value, ":") + 1));
-//                }
-//                if (isset($writetxt[$analysis[0]])) {
-//                    if (in_array($analysis[1] . ": " . $setv, $writetxt[$analysis[0]])) {
-//                        continue;
-//                    }
-//                }
-//                $writetxt[$analysis[0]][] = trim($value) == '' ? '' : $analysis[1] . ": " . $setv;
             }
             foreach ($writetxt as $confpath => $setlist) {
                 $fop = fopen($main_folder . $save_txt_[$confpath], (array_search($confpath, $read_conf_list) < 8) ? "w" : "a");
