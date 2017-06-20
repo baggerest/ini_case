@@ -11,20 +11,20 @@ function check_POST($main_folder,$read_conf_list,$save_txt_)
                     continue;
                 }
                 if ($analysis[1] == "import") {
-                    if($value=="") {
+                    if ($value == "") {
                         $writetxt[$analysis[0]][] = "";
                     } else {
                         $import = "";
-                        foreach (explode("\n",trim($value)) as $item) {
-                            if(strpos($item,"import:")>=0) {
-                                if(strpos($import,$item)=="" && $key > 0) {
-                                    $import .= $item."\n";
+                        foreach (explode("\n", trim($value)) as $item) {
+                            if (strpos($item, "import:") >= 0) {
+                                if($key > 0) {
+                                    $import = trim(str_replace($item, "", $import)) . "\n" . $item . "\n";
                                 }
                             } else {
                                 $analysis[1] = substr($item, 0, strpos($item, ":"));
                                 $setv = trim(substr($item, strpos($item, ":") + 1));
                                 if (isset($writetxt[$analysis[0]])) {
-                                    if(in_array($analysis[1] . ": " . $setv,$writetxt[$analysis[0]])) {
+                                    if (in_array($analysis[1] . ": " . $setv, $writetxt[$analysis[0]])) {
                                         $writetxt[$analysis[0]][] = $analysis[1] . ": " . $setv;
                                     }
                                 }

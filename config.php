@@ -76,6 +76,15 @@ $save_txt_ = array(
     $read_conf_list[24] => $save_txt[0],
 );
 
+$remove_file = array(
+    0 => "atcommand_athena.conf",
+    1 => "channels.conf",
+    2 => "groups.conf",
+    3 => "inter_server.conf",
+    4 => "maps_athena.conf",
+    5 => "subnet_athena.conf",
+);
+
 $td_height_px = 27;
 $symbol = "&prime;";
 $dsymbol = "&Prime;";
@@ -85,3 +94,4 @@ $show_set_border_color = 'darkgreen';
 $th_font_size = 20;
 $th_font_color = '#000000';
 $th_back_color = '#BDB885';
+$version = "v1.0 by baggerest © 2017.6";

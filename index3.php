@@ -14,8 +14,15 @@ echo "<a href='javascript:Unfolded();'>Unfolded list</a><br>";
 echo "<a href='javascript:closure();''>Closure list</a><br>";
 echo "<a href='{$_SERVER['PHP_SELF']}'>Reload file</a><br>";
 echo "</div>";
-echo "<div style='position: fixed;top: 20px;right: 20px;text-align: right'>";
+echo "<div style='position: fixed;bottom: 20px;right: 20px;text-align: right'>";
 echo "<input type='submit' name='setup' value='complete Setup' style='border-style: dotted'>";
+echo "</div>";
+echo "<div style='position: fixed;bottom: 20px;left: 20px;text-align: right'>";
+echo "<h3 style='text-align: left'>No Include Files</h3>";
+foreach ($remove_file as $file) {
+    echo "<Li style='text-align: left'><I>$file</I></Li>";
+}
+echo "<h4>$version</h4>";
 echo "</div>";
 echo "<table id='set_table' align='center' border='1' style='border-style: dashed;border-color:#FFAC55;padding:5px;text-align: center'>";
 foreach ($conf_file_list as $filename => $setlist) {
