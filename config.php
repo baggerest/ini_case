@@ -1,13 +1,17 @@
 <?php
+if(strpos($_SERVER['HTTP_USER_AGENT'],"Chrome")=="") die("Not Chrome Google Browser System.");
+
 $main_folder = "";
 switch ($_ENV['COMPUTERNAME']) {
     case 'DESKTOP-6OVHJN1':
         $main_folder = "C:/my/rathena/conf/";
         break;
     default:
-        $main_folder = "D:/rathena/conf/";
+        $main_folder = "";
         break;
 }
+
+if(!is_dir($main_folder)) die("&Prime;$main_folder&Prime; isn't Conf Files path.");
 
 $read_conf_list = array(
     0 => "battle_athena.conf",
