@@ -11,7 +11,7 @@ switch ($_ENV['COMPUTERNAME']) {
         break;
 }
 
-if(!is_dir($main_folder)) die("&Prime;$main_folder&Prime; isn't Conf Files path.");
+if(!is_dir($main_folder)) die("&Prime;$main_folder&Prime; does not exist.");
 
 $read_conf_list = array(
     0 => "battle_athena.conf",
