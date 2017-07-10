@@ -6,6 +6,9 @@ switch ($_ENV['COMPUTERNAME']) {
     case 'DESKTOP-6OVHJN1':
         $main_folder = "C:/my/rathena/conf/";
         break;
+    case 'ZOKU':
+        $main_folder = "D:/rathena/conf/";
+        break;
     default:
         $main_folder = "";
         break;
