@@ -4,10 +4,10 @@ if(strpos($_SERVER['HTTP_USER_AGENT'],"Chrome")=="") die("Not Chrome Google Brow
 $main_folder = "";
 switch ($_ENV['COMPUTERNAME']) {
     case 'DESKTOP-6OVHJN1':
-        $main_folder = "C:/my/rathena/conf/";
+        $main_folder = "C:/my/rathena_20180819/conf/";
         break;
     case 'ZOKU':
-        $main_folder = "D:/rathena/conf/";
+        $main_folder = "D:/rathena_20180819/conf/";
         break;
     default:
         $main_folder = "";
