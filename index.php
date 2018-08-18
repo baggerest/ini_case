@@ -64,7 +64,7 @@
 <?php
 header("Content-Type:text/html; charset=utf-8");
 $main_folder = "D:/rathena/conf/";
-$main_folder = "C:/my/rathena/conf/";
+$main_folder = "C:/my/rathena_20180819/conf/";
 
 $read_conf_list = array(
     0 => "char_athena.conf",
