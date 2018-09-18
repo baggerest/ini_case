@@ -225,8 +225,8 @@ foreach ($getnew_ as $name => $item)
         echo "</td>";
         echo "<td style='text-align: right'>".$value[0]."</td>";
         echo "<td>";
-        echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$value[1]."' size= ".(strlen($value[1])+5)." style='color: darkgrey' readonly='readonly' tabindex='-1'><br>";
-        echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$valuetemp."' size= ".(strlen($valuetemp)+5)." style='background-color: $backcolor' onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
+        echo "<input id='".$name."^".$number."_' name='".$name."^".$number."_' type='text' value='".$value[1]."' size= ".(strlen($value[1])+5)." style='color: darkgrey;border: 0px' readonly='readonly' tabindex='-1'><br>";
+        echo "<input id='".$name."^".$number."' name='".$name."^".$number."' type='text' value='".$valuetemp."' size= ".(strlen($valuetemp)+5)." style='background-color: $backcolor;border: 0px' onchange='check(this.id,\"$name\",$number)' onkeyup='check(this.id,\"$name\",$number)'>";
         if(isset($value[2]))
         {
             echo "<script>check('$name^$number','$name',$number);</script>";
